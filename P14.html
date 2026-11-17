@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Sphere - Student Task Manager</title>
+
+    <style>
+        body {
+            background: lavender;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .task-container {
+            background: white;
+            width: 400px;
+            max-width: 90%;
+            margin: 50px auto;
+            padding: 25px;
+            text-align: center;
+            border-radius: 15px;
+            border: 3px solid purple;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: purple;
+        }
+
+        p {
+            color: #555;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid purple;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        button {
+            background: purple;
+            color: white;
+            padding: 10px 18px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #6a0dad;
+        }
+
+        .task {
+            background: #f0e6ff;
+            border: 1px solid purple;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            text-align: left;
+            overflow-wrap: anywhere;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .delete-btn {
+            background: crimson;
+        }
+
+        .complete-btn {
+            background: seagreen;
+        }
+
+        #message {
+            color: green;
+            font-weight: bold;
+        }
+
+        @media (max-width: 480px) {
+            .task-container {
+                width: auto;
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="task-container">
+
+        <h2>Task Sphere</h2>
+        <p>Organize Your Tasks. Manage Your Time.</p>
+
+        <h3>Student Task Manager</h3>
+
+        <input type="text" id="taskName"
+               placeholder="Enter Task Name">
+
+        <textarea id="taskDescription"
+                  placeholder="Enter Task Description"></textarea>
+
+        <input type="date" id="dueDate">
+
+        <select id="priority">
+            <option value="">Select Priority</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+        </select>
+
+        <button onclick="addTask()">Add Task</button>
+
+        <p id="message"></p>
+
+        <h3>My Task List</h3>
+
+        <div id="taskList">
+            <p>No tasks added yet!</p>
+        </div>
+
+        <h3 id="taskCount">Total Tasks: 0</h3>
+
+    </div>
+
+    <script>
+
+        let totalTasks = 0;
+
+        function addTask() {
+
+            let name = document.getElementById("taskName").value.trim();
+
+            let description = document.getElementById("taskDescription").value.trim();
+
+            let date = document.getElementById("dueDate").value;
+
+            let priority = document.getElementById("priority").value;
+
+            let taskList = document.getElementById("taskList");
+
+            let message = document.getElementById("message");
+
+            // Check whether fields are empty
+            if (name === "" || description === "" ||
+                date === "" || priority === "") {
+
+                message.style.color = "red";
+                message.innerText = "Please fill all the fields!";
+                return;
+            }
+
+            // Remove the default message
+            if (totalTasks === 0) {
+                taskList.innerHTML = "";
+            }
+
+            // Create a new task
+            let task = document.createElement("div");
+            task.className = "task";
+
+            // Task name
+            let title = document.createElement("h4");
+            title.textContent = name;
+
+            // Task details
+            let details = document.createElement("p");
+            details.textContent = description;
+
+            // Due date
+            let due = document.createElement("p");
+            due.textContent = "Due Date: " + date;
+
+            // Priority
+            let level = document.createElement("p");
+            level.textContent = "Priority: " + priority;
+
+            // Complete button
+            let completeButton = document.createElement("button");
+            completeButton.innerText = "Complete";
+            completeButton.className = "complete-btn";
+
+            completeButton.onclick = function() {
+                title.classList.toggle("completed");
+                details.classList.toggle("completed");
+                due.classList.toggle("completed");
+                level.classList.toggle("completed");
+
+                if (title.classList.contains("completed")) {
+                    completeButton.innerText = "Completed";
+                } else {
+                    completeButton.innerText = "Complete";
+                }
+            };
+
+            // Delete button
+            let deleteButton = document.createElement("button");
+            deleteButton.innerText = "Delete";
+            deleteButton.className = "delete-btn";
+
+            deleteButton.onclick = function() {
+                task.remove();
+                totalTasks--;
+                updateCount();
+
+                if (totalTasks === 0) {
+                    taskList.innerHTML = "<p>No tasks added yet!</p>";
+                }
+            };
+
+            // Add all elements to task
+            task.appendChild(title);
+            task.appendChild(details);
+            task.appendChild(due);
+            task.appendChild(level);
+            task.appendChild(completeButton);
+            task.appendChild(deleteButton);
+
+            // Display task
+            taskList.appendChild(task);
+
+            totalTasks++;
+            updateCount();
+
+            // Success message
+            message.style.color = "green";
+            message.innerText = "Task added successfully!";
+
+            // Clear input fields
+            document.getElementById("taskName").value = "";
+            document.getElementById("taskDescription").value = "";
+            document.getElementById("dueDate").value = "";
+            document.getElementById("priority").value = "";
+        }
+
+        function updateCount() {
+            document.getElementById("taskCount").innerText =
+                "Total Tasks: " + totalTasks;
+        }
+
+    </script>
+
+</body>
+</html>
